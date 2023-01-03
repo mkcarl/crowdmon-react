@@ -1,11 +1,10 @@
-import logo from "./logo.svg";
 import "./App.css";
-import { ImageCropper } from "./components/ImageCropper";
-import { Homepage } from "./pages/Homepage";
-import { LoginModal } from "./components/LoginModal";
+import { LandingPage } from "./pages/LandingPage";
 import { useCookies } from "react-cookie";
-import { Button, createTheme, CssBaseline, ThemeProvider } from "@mui/material";
-import { paimonTheme } from "./styles/Themes";
+import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Homepage } from "./pages/Homepage";
+import { CroppingPage } from "./pages/CroppingPage";
 
 const theme = createTheme({
     palette: {
@@ -16,26 +15,26 @@ const theme = createTheme({
         secondary: {
             main: "#d9c5c5",
         },
+        background: {
+            default: "#303030",
+        },
     },
 });
 
 function App() {
-    const [cookies, setCookies, removeCookies] = useCookies(["user"]);
-
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <div className="App">
-                <h1>{cookies.user}</h1>
-                <Button
-                    onClick={() => {
-                        removeCookies("user");
-                    }}
-                >
-                    Clear Cookies
-                </Button>
-                <LoginModal />
-            </div>
+            <BrowserRouter>
+                <Routes>
+                    <Route path={"/"} element={<LandingPage />}></Route>
+                    <Route path={"/homepage"} element={<Homepage />}></Route>
+                    <Route
+                        path={"/crop/:videoId"}
+                        element={<CroppingPage />}
+                    ></Route>
+                </Routes>
+            </BrowserRouter>
         </ThemeProvider>
     );
 }

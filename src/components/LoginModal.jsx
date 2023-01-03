@@ -14,10 +14,9 @@ const style = {
     padding: "2rem",
 };
 
-export function LoginModal(props) {
+export function LoginModal() {
     const [username, setUsername] = useState(null);
     const [cookies, setCookies, removeCookies] = useCookies(["user"]);
-
     return (
         <Modal open={!cookies.user}>
             <Paper elevation={12} style={style}>
