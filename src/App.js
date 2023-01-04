@@ -1,7 +1,12 @@
 import "./App.css";
 import { LandingPage } from "./pages/LandingPage";
 import { useCookies } from "react-cookie";
-import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
+import {
+    createTheme,
+    CssBaseline,
+    responsiveFontSizes,
+    ThemeProvider,
+} from "@mui/material";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Homepage } from "./pages/Homepage";
 import { CroppingPage } from "./pages/CroppingPage";
@@ -21,9 +26,11 @@ const theme = createTheme({
     },
 });
 
+const responsiveTheme = responsiveFontSizes(theme);
+
 function App() {
     return (
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={responsiveTheme}>
             <CssBaseline />
             <BrowserRouter>
                 <Routes>
