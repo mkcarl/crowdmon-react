@@ -2,7 +2,15 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
-import { Box, Button, Paper, Skeleton, Typography } from "@mui/material";
+import {
+    Box,
+    Button,
+    Container,
+    Grid,
+    Paper,
+    Skeleton,
+    Typography,
+} from "@mui/material";
 
 function centerAspectCrop(mediaWidth, mediaHeight, aspect) {
     return centerCrop(
@@ -103,71 +111,85 @@ export function ImageCropper(props) {
     return (
         <>
             <Paper elevation={12}>
-                {completion === 100 && (
-                    <Paper elevation={1} sx={{ width: 640, height: 360 }}>
-                        <Typography variant={"h2"}>
-                            This video is completely annotated.
-                        </Typography>
-                    </Paper>
-                )}
-                {completion < 100 && !imageLoaded && (
-                    <Skeleton
-                        variant={"rectangular"}
-                        width={640}
-                        height={360}
-                    />
-                )}
-                <ReactCrop
-                    crop={crop}
-                    onChange={(c) => setCrop(c)}
-                    onComplete={(c) => setCompletedCrop(c)}
-                >
-                    <Box
-                        component={"img"}
-                        src={image.url}
-                        onLoad={onImageLoad}
-                        width={640}
-                        height={360}
-                    ></Box>
-                </ReactCrop>
-                <Typography variant={"caption"}>{image.name}</Typography>
-                <Button
-                    onClick={() => {
-                        sendCrop(
-                            completedCrop,
-                            props.videoId,
-                            image.name,
-                            props.contributorId
-                        ).then(
-                            () => setRefresh(true),
-                            () => console.log("send crop failed")
-                        );
-                        setRefresh(true);
-                    }}
-                    color={"primary"}
-                    variant={"contained"}
-                    disabled={completion >= 100 && !imageLoaded}
-                >
-                    Crop
-                </Button>
-                <Button
-                    onClick={() => {
-                        sendSkipCrop(
-                            props.videoId,
-                            image.name,
-                            props.contributorId
-                        ).then(
-                            () => setRefresh(true),
-                            () => console.log("send crop failed")
-                        );
-                        setRefresh(true);
-                    }}
-                    color={"secondary"}
-                    variant={"contained"}
-                    disabled={completion >= 100 && !imageLoaded}
-                >
-                    skip
-                </Button>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        {completion === 100 && (
+                            <Paper
+                                elevation={1}
+                                sx={{ width: 640, height: 360 }}
+                            >
+                                <Typography variant={"h2"}>
+                                    This video is completely annotated.
+                                </Typography>
+                            </Paper>
+                        )}
+                        <ReactCrop
+                            crop={crop}
+                            onChange={(c) => setCrop(c)}
+                            onComplete={(c) => setCompletedCrop(c)}
+                        >
+                            <Box
+                                component={"img"}
+                                src={image.url}
+                                onLoad={onImageLoad}
+                                width={640}
+                                height={360}
+                                loading={"lazy"}
+                            />
+                        </ReactCrop>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Container>
+                            {!image.name && (
+                                <Skeleton variant={"caption"} width={"20rem"} />
+                            )}
+                            <Typography variant={"caption"}>
+                                {image.name}
+                            </Typography>
+                        </Container>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Container>
+                            <Button
+                                onClick={() => {
+                                    sendCrop(
+                                        completedCrop,
+                                        props.videoId,
+                                        image.name,
+                                        props.contributorId
+                                    ).then(
+                                        () => setRefresh(true),
+                                        () => console.log("send crop failed")
+                                    );
+                                    setRefresh(true);
+                                }}
+                                color={"primary"}
+                                variant={"contained"}
+                                disabled={completion >= 100 && !imageLoaded}
+                            >
+                                Crop
+                            </Button>
+                            <Button
+                                onClick={() => {
+                                    sendSkipCrop(
+                                        props.videoId,
+                                        image.name,
+                                        props.contributorId
+                                    ).then(
+                                        () => setRefresh(true),
+                                        () => console.log("send crop failed")
+                                    );
+                                    setRefresh(true);
+                                }}
+                                color={"secondary"}
+                                variant={"contained"}
+                                disabled={completion >= 100 && !imageLoaded}
+                            >
+                                skip
+                            </Button>
+                        </Container>
+                    </Grid>
+                </Grid>
             </Paper>
         </>
     );
