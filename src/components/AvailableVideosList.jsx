@@ -1,7 +1,6 @@
 import {
     Box,
     Chip,
-    CircularProgress,
     List,
     ListItemButton,
     ListItemIcon,

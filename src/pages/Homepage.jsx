@@ -1,19 +1,7 @@
 import { useCookies } from "react-cookie";
 import { LoginModal } from "../components/LoginModal";
-import {
-    Box,
-    Grid,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    Paper,
-    Typography,
-} from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { AvailableVideosList } from "../components/AvailableVideosList";
-import { useEffect, useState } from "react";
-import axios from "axios";
 import { Navbar } from "../components/Navbar";
 
 export function Homepage() {

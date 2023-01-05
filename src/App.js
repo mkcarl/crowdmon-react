@@ -1,6 +1,5 @@
 import "./App.css";
 import { LandingPage } from "./pages/LandingPage";
-import { useCookies } from "react-cookie";
 import {
     createTheme,
     CssBaseline,

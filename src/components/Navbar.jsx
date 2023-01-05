@@ -1,13 +1,12 @@
 import {
     AppBar,
-    Button,
     IconButton,
-    Toolbar,
-    Typography,
-    Tooltip,
     Link,
+    Toolbar,
+    Tooltip,
+    Typography,
 } from "@mui/material";
-import { Home, Leaderboard, Logout, Menu } from "@mui/icons-material";
+import { Home, Leaderboard, Logout } from "@mui/icons-material";
 import { useCookies } from "react-cookie";
 
 export function Navbar() {

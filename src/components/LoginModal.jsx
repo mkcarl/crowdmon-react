@@ -1,4 +1,4 @@
-import { Button, Modal, Paper, TextField, Typography } from "@mui/material";
+import { Button, Modal, Paper, TextField } from "@mui/material";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 
