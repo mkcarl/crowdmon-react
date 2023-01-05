@@ -1,6 +1,7 @@
 import {
     Box,
     Chip,
+    Divider,
     List,
     ListItemButton,
     ListItemIcon,
@@ -28,7 +29,10 @@ export function AvailableVideosList() {
     return (
         <Paper elevation={12}>
             <Box component={"div"} sx={{ padding: "1rem" }}>
-                <Typography variant={"h2"}>Available videos</Typography>
+                <Typography variant={"h2"} textAlign={"center"}>
+                    Available videos
+                </Typography>
+                <Divider />
                 <List>
                     {videoTitles.map((video) => (
                         <VideoItem name={video} key={video} />

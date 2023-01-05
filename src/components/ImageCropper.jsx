@@ -3,14 +3,20 @@ import axios from "axios";
 import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import {
+    Alert,
     Box,
     Button,
     Container,
+    Divider,
     Grid,
     Paper,
     Skeleton,
+    Step,
+    StepLabel,
+    Stepper,
     Typography,
 } from "@mui/material";
+import doneImage from "../static/done.jpg";
 
 function centerAspectCrop(mediaWidth, mediaHeight, aspect) {
     return centerCrop(
@@ -60,6 +66,7 @@ export function ImageCropper(props) {
     const [imageLoaded, setImageLoaded] = useState(false);
     const [videoProgress, setVideoProgress] = useState({});
     const [completion, setCompletion] = useState(0);
+    const [dimensions, setDimensions] = useState({ width: 640, height: 360 });
 
     useEffect(() => {
         const getVideoProgressFromServer = async () => {
@@ -80,6 +87,12 @@ export function ImageCropper(props) {
             setCompletion((videoProgress.cropped / videoProgress.total) * 100);
         }
     }, [videoProgress]);
+
+    useEffect(() => {
+        if (Object.keys(image).length === 0) {
+            setCompletion(100);
+        }
+    }, [image]);
 
     const temp = `http://100.76.207.17:8000/randomImage?videoId=${props.videoId}`;
     const loadImage = async () => {
@@ -106,50 +119,131 @@ export function ImageCropper(props) {
         const { width, height } = e.currentTarget;
         setImageLoaded(true);
         setCrop(centerAspectCrop(width, height, 1));
+        setDimensions({
+            width: e.target.naturalWidth,
+            height: e.target.naturalHeight,
+        });
     }
 
     return (
         <>
-            <Paper elevation={12}>
+            <Paper
+                elevation={12}
+                sx={{
+                    padding: "1rem",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "1rem",
+                }}
+            >
+                <Box component={"div"} textAlign={"center"}>
+                    <Typography variant={"h4"}>{props.videoId}</Typography>
+                </Box>
+                <Divider />
+                <Box
+                    component={"div"}
+                    hidden={completion !== 100}
+                    sx={{ marginBottom: "1rem" }}
+                >
+                    <Alert severity="success">
+                        This video has been completely annotated!
+                    </Alert>
+                </Box>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        {completion === 100 && (
-                            <Paper
-                                elevation={1}
-                                sx={{ width: 640, height: 360 }}
-                            >
-                                <Typography variant={"h2"}>
-                                    This video is completely annotated.
-                                </Typography>
-                            </Paper>
-                        )}
-                        <ReactCrop
-                            crop={crop}
-                            onChange={(c) => setCrop(c)}
-                            onComplete={(c) => setCompletedCrop(c)}
+                        <Box
+                            component={"div"}
+                            sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                width: "100%",
+                                height: "auto",
+                            }}
                         >
-                            <Box
-                                component={"img"}
-                                src={image.url}
-                                onLoad={onImageLoad}
-                                width={640}
-                                height={360}
-                                loading={"lazy"}
-                            />
-                        </ReactCrop>
+                            <Box component={"div"} hidden={completion !== 100}>
+                                <ReactCrop onChange={() => {}} disabled>
+                                    <Box
+                                        component={"img"}
+                                        src={doneImage}
+                                        onLoad={onImageLoad}
+                                        loading={"lazy"}
+                                        sx={{
+                                            width: "auto",
+                                            height: "auto",
+                                            maxWidth: "1280px",
+                                            maxHeight: "720px",
+                                        }}
+                                    />
+                                </ReactCrop>
+                            </Box>
+                            <Box component={"div"} hidden={completion === 100}>
+                                <ReactCrop
+                                    crop={crop}
+                                    onChange={(c) => setCrop(c)}
+                                    onComplete={(c) => setCompletedCrop(c)}
+                                >
+                                    <Box
+                                        component={"img"}
+                                        src={image.url}
+                                        onLoad={onImageLoad}
+                                        loading={"lazy"}
+                                        sx={{
+                                            width: "auto",
+                                            height: "auto",
+                                            maxWidth: "1280px",
+                                            maxHeight: "720px",
+                                        }}
+                                    />
+                                    <Box component={"div"} hidden={imageLoaded}>
+                                        <Skeleton
+                                            width={dimensions.width}
+                                            height={dimensions.height}
+                                            maxWidth={1280}
+                                            maxHeight={720}
+                                            variant={"rectangular"}
+                                        />
+                                    </Box>
+                                </ReactCrop>
+                            </Box>
+                        </Box>
                     </Grid>
                     <Grid item xs={12}>
-                        <Container>
-                            {!image.name && (
-                                <Skeleton variant={"caption"} width={"20rem"} />
-                            )}
+                        <Box
+                            component={"div"}
+                            sx={{ display: "flex", justifyContent: "center" }}
+                        >
                             <Typography variant={"caption"}>
                                 {image.name}
                             </Typography>
-                        </Container>
+                        </Box>
                     </Grid>
                     <Grid item xs={12}>
-                        <Container>
+                        <Box
+                            component={"div"}
+                            sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                gap: "1rem",
+                            }}
+                        >
+                            <Button
+                                onClick={() => {
+                                    sendSkipCrop(
+                                        props.videoId,
+                                        image.name,
+                                        props.contributorId
+                                    ).then(
+                                        () => setRefresh(true),
+                                        () => console.log("send crop failed")
+                                    );
+                                    setRefresh(true);
+                                }}
+                                color={"secondary"}
+                                variant={"contained"}
+                                disabled={completion >= 100}
+                            >
+                                skip
+                            </Button>
                             <Button
                                 onClick={() => {
                                     sendCrop(
@@ -165,29 +259,11 @@ export function ImageCropper(props) {
                                 }}
                                 color={"primary"}
                                 variant={"contained"}
-                                disabled={completion >= 100 && !imageLoaded}
+                                disabled={completion >= 100}
                             >
                                 Crop
                             </Button>
-                            <Button
-                                onClick={() => {
-                                    sendSkipCrop(
-                                        props.videoId,
-                                        image.name,
-                                        props.contributorId
-                                    ).then(
-                                        () => setRefresh(true),
-                                        () => console.log("send crop failed")
-                                    );
-                                    setRefresh(true);
-                                }}
-                                color={"secondary"}
-                                variant={"contained"}
-                                disabled={completion >= 100 && !imageLoaded}
-                            >
-                                skip
-                            </Button>
-                        </Container>
+                        </Box>
                     </Grid>
                 </Grid>
             </Paper>
