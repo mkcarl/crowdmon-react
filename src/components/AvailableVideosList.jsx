@@ -1,4 +1,5 @@
 import {
+    Box,
     Chip,
     CircularProgress,
     List,
@@ -27,12 +28,14 @@ export function AvailableVideosList() {
 
     return (
         <Paper elevation={12}>
-            <Typography variant={"h2"}>Available videos</Typography>
-            <List>
-                {videoTitles.map((video) => (
-                    <VideoItem name={video} key={video} />
-                ))}
-            </List>
+            <Box component={"div"} sx={{ padding: "1rem" }}>
+                <Typography variant={"h2"}>Available videos</Typography>
+                <List>
+                    {videoTitles.map((video) => (
+                        <VideoItem name={video} key={video} />
+                    ))}
+                </List>
+            </Box>
         </Paper>
     );
 }
@@ -67,8 +70,10 @@ function VideoItem(props) {
                 <VideoLibrary color={"primary"} />
             </ListItemIcon>
             <ListItemText>
-                <div>
-                    <Typography variant={"subtitle1"}>{props.name}</Typography>
+                <Box component={"div"} sx={{ display: "flex" }}>
+                    <Typography variant={"subtitle1"} flexGrow={1}>
+                        {props.name}
+                    </Typography>
                     <Chip
                         label={
                             !isNaN(completion)
@@ -83,7 +88,7 @@ function VideoItem(props) {
                                 : "success"
                         }
                     />
-                </div>
+                </Box>
             </ListItemText>
         </ListItemButton>
     );

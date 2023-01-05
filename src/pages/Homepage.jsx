@@ -2,6 +2,7 @@ import { useCookies } from "react-cookie";
 import { LoginModal } from "../components/LoginModal";
 import {
     Box,
+    Grid,
     List,
     ListItem,
     ListItemButton,
@@ -21,15 +22,28 @@ export function Homepage() {
     return (
         <>
             <Navbar />
-            <Box component={"div"}>
+            <Box
+                component={"div"}
+                sx={{
+                    padding: "1rem",
+                }}
+            >
                 <LoginModal />
                 {cookies.user && (
-                    <>
-                        <Typography variant={"h1"}>
-                            Welcome back {cookies.user}
-                        </Typography>
-                        <AvailableVideosList />
-                    </>
+                    <Box component={"div"}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <Typography variant={"h1"}>
+                                    Welcome back {cookies.user}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={0} md={2}></Grid>
+                            <Grid item xs={12} md={8}>
+                                <AvailableVideosList />
+                            </Grid>
+                            <Grid item xs={0} md={2}></Grid>
+                        </Grid>
+                    </Box>
                 )}
             </Box>
         </>
