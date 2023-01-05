@@ -89,7 +89,7 @@ export function ImageCropper(props) {
     }, [videoProgress]);
 
     useEffect(() => {
-        if (Object.keys(image).length === 0) {
+        if (imageLoaded && Object.keys(image).length === 0) {
             setCompletion(100);
         }
     }, [image]);
@@ -215,6 +215,9 @@ export function ImageCropper(props) {
                             <Typography variant={"caption"}>
                                 {image.name}
                             </Typography>
+                            <Box component={"div"} hidden={!!image.name}>
+                                <Skeleton variant={"caption"} width={"20rem"} />
+                            </Box>
                         </Box>
                     </Grid>
                     <Grid item xs={12}>
