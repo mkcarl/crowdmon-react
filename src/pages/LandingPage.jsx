@@ -13,6 +13,7 @@ export function LandingPage() {
                         padding: "10vw",
                         justifyContent: "center",
                         alignItems: "flex-start",
+                        userSelect: "none",
                     }}
                     bgcolor={"primary.dark"}
                 >
@@ -40,6 +41,8 @@ export function LandingPage() {
                     component={"div"}
                     alignSelf={"flex-end"}
                     maxHeight={"100%"}
+                    userSelect={"none"}
+                    draggable={"false"}
                 >
                     <Box
                         component={"img"}
