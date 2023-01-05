@@ -1,4 +1,11 @@
-import { Button, Modal, Paper, TextField } from "@mui/material";
+import {
+    Box,
+    Button,
+    Modal,
+    Paper,
+    TextField,
+    Typography,
+} from "@mui/material";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 
@@ -20,23 +27,36 @@ export function LoginModal() {
     return (
         <Modal open={!cookies.user}>
             <Paper elevation={12} style={style}>
-                <TextField
-                    name={"username"}
-                    label={"Plese insert your username"}
-                    variant={"filled"}
-                    onChange={(e) => setUsername(e.target.value)}
-                />
-                <Button
-                    disabled={!username}
-                    color={"primary"}
-                    variant={"contained"}
-                    onClick={() => {
-                        setCookies("user", username);
+                <Box
+                    component={"div"}
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "1rem",
                     }}
-                    autoFocus={true}
                 >
-                    Continue
-                </Button>
+                    <Typography variant={"h4"} textAlign={"center"}>
+                        Login
+                    </Typography>
+                    <TextField
+                        name={"username"}
+                        label={"Plese insert your username"}
+                        variant={"filled"}
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
+                    <Button
+                        disabled={!username}
+                        color={"primary"}
+                        variant={"contained"}
+                        onClick={() => {
+                            setCookies("user", username);
+                        }}
+                        autoFocus={true}
+                        sx={{ alignSelf: "flex-end" }}
+                    >
+                        Continue
+                    </Button>
+                </Box>
             </Paper>
         </Modal>
     );
