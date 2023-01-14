@@ -9,6 +9,8 @@ import {
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Homepage } from "./pages/Homepage";
 import { CroppingPage } from "./pages/CroppingPage";
+import { ContributionsPage } from "./pages/ContributionsPage";
+import { PersonalContributionPage } from "./pages/PersonalContributionPage";
 
 const theme = createTheme({
     palette: {
@@ -38,6 +40,14 @@ function App() {
                     <Route
                         path={"/crop/:videoId"}
                         element={<CroppingPage />}
+                    ></Route>
+                    <Route
+                        path={"/contributions"}
+                        element={<ContributionsPage />}
+                    ></Route>
+                    <Route
+                        path={"/contributions/:userId"}
+                        element={<PersonalContributionPage />}
                     ></Route>
                 </Routes>
             </BrowserRouter>

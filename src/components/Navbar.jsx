@@ -37,7 +37,7 @@ export function Navbar() {
                     </IconButton>
                 </Tooltip>
                 <Tooltip title={"Contribution"}>
-                    <IconButton>
+                    <IconButton href={"/contributions"}>
                         <Leaderboard sx={{ color: "primary.contrastText" }} />
                     </IconButton>
                 </Tooltip>
