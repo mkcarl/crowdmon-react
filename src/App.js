@@ -11,6 +11,9 @@ import { Homepage } from "./pages/Homepage";
 import { CroppingPage } from "./pages/CroppingPage";
 import { ContributionsPage } from "./pages/ContributionsPage";
 import { PersonalContributionPage } from "./pages/PersonalContributionPage";
+import { AuthProvider } from "./auth";
+import { LoginPage } from "./pages/LoginPage";
+import { RequireAuth } from "./components/RequireAuth";
 
 const theme = createTheme({
     palette: {
@@ -31,27 +34,42 @@ const responsiveTheme = responsiveFontSizes(theme);
 
 function App() {
     return (
-        <ThemeProvider theme={responsiveTheme}>
-            <CssBaseline />
-            <BrowserRouter>
-                <Routes>
-                    <Route path={"/"} element={<LandingPage />}></Route>
-                    <Route path={"/homepage"} element={<Homepage />}></Route>
-                    <Route
-                        path={"/crop/:videoId"}
-                        element={<CroppingPage />}
-                    ></Route>
-                    <Route
-                        path={"/contributions"}
-                        element={<ContributionsPage />}
-                    ></Route>
-                    <Route
-                        path={"/contributions/:userId"}
-                        element={<PersonalContributionPage />}
-                    ></Route>
-                </Routes>
-            </BrowserRouter>
-        </ThemeProvider>
+        <AuthProvider>
+            <ThemeProvider theme={responsiveTheme}>
+                <CssBaseline />
+
+                <BrowserRouter>
+                    <Routes>
+                        <Route path={"/"} element={<LandingPage />}></Route>
+                        <Route
+                            path={"/homepage"}
+                            element={
+                                <RequireAuth>
+                                    <Homepage />
+                                </RequireAuth>
+                            }
+                        ></Route>
+                        <Route
+                            path={"/crop/:videoId"}
+                            element={<CroppingPage />}
+                        ></Route>
+                        <Route
+                            path={"/contributions"}
+                            element={<ContributionsPage />}
+                        ></Route>
+                        <Route
+                            path={"/contributions/:userId"}
+                            element={
+                                <RequireAuth>
+                                    <PersonalContributionPage />
+                                </RequireAuth>
+                            }
+                        ></Route>
+                        <Route path={"/login"} element={<LoginPage />}></Route>
+                    </Routes>
+                </BrowserRouter>
+            </ThemeProvider>
+        </AuthProvider>
     );
 }
 

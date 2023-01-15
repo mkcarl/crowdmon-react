@@ -3,10 +3,11 @@ import { LoginModal } from "../components/LoginModal";
 import { Box, Grid, Typography } from "@mui/material";
 import { AvailableVideosList } from "../components/AvailableVideosList";
 import { Navbar } from "../components/Navbar";
+import { useAuth } from "../auth";
 
 export function Homepage() {
     const [cookies, setCookies, removeCookies] = useCookies(["user"]);
-
+    const auth = useAuth();
     return (
         <>
             <Navbar />
@@ -17,12 +18,12 @@ export function Homepage() {
                 }}
             >
                 <LoginModal />
-                {cookies.user && (
+                {auth.user && (
                     <Box component={"div"}>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <Typography variant={"h1"}>
-                                    Welcome back {cookies.user}
+                                    Welcome back {auth.user}
                                 </Typography>
                             </Grid>
                             <Grid item xs={0} md={2}></Grid>

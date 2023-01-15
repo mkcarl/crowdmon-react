@@ -8,11 +8,15 @@ import {
 } from "@mui/material";
 import { Home, Leaderboard, Logout } from "@mui/icons-material";
 import { useCookies } from "react-cookie";
+import { useAuth } from "../auth";
+import { useNavigate } from "react-router-dom";
 
 export function Navbar() {
-    const [cookies, setCookies, removeCookies] = useCookies(["user"]);
-    const logout = () => {
-        removeCookies("user");
+    const auth = useAuth();
+    const navigate = useNavigate();
+    const handleLogout = () => {
+        auth.logout();
+        navigate("/", { replace: true });
     };
 
     return (
@@ -42,7 +46,7 @@ export function Navbar() {
                     </IconButton>
                 </Tooltip>
                 <Tooltip title={"Logout"}>
-                    <IconButton onClick={logout}>
+                    <IconButton onClick={handleLogout}>
                         <Logout sx={{ color: "primary.contrastText" }} />
                     </IconButton>
                 </Tooltip>
