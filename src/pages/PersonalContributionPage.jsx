@@ -2,11 +2,13 @@ import { Navbar } from "../components/Navbar";
 import {
     Box,
     Chip,
+    Divider,
     Grid,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
+    Pagination,
     Paper,
     Typography,
     useTheme,
@@ -119,7 +121,7 @@ const colors = [
     "rgba(27, 34, 7,0.5)",
     "rgba(6, 33, 1,0.5)",
     "rgba(249, 0, 6,0.5)",
-    "rgba(2, 2, ,0.5)",
+    "rgba(2, 2, 2 ,0.5)",
     "rgba(221, 221, 22,0.5)",
     "rgba(105, 165, 7,0.5)",
     "rgba(149, 173, 10,0.5)",
@@ -144,6 +146,8 @@ export function PersonalContributionPage(props) {
         width: 300,
         height: 300,
     });
+    const [page, setPage] = useState(1);
+    const pageLength = 8;
 
     useEffect(() => {
         const reduced = crops.reduce((acc, crop) => {
@@ -307,9 +311,24 @@ export function PersonalContributionPage(props) {
                         </Paper>
                     </Grid>
                     <Grid item xs={12}>
-                        <Paper elevation={1}>
+                        <Paper
+                            elevation={1}
+                            sx={{
+                                padding: "1rem",
+                                gap: "1rem",
+                            }}
+                        >
+                            <Typography variant={"h4"} textAlign={"center"}>
+                                Crop details
+                            </Typography>
+                            <Divider />
                             <List>
-                                {Object.values(crops).map((crop) => (
+                                {Object.values(
+                                    crops.slice(
+                                        page * pageLength,
+                                        page * pageLength + pageLength
+                                    )
+                                ).map((crop) => (
                                     <ListItem>
                                         <ListItemIcon>
                                             <Crop color={"secondary"} />
@@ -330,8 +349,15 @@ export function PersonalContributionPage(props) {
                                         />
                                     </ListItem>
                                 ))}
-                                {/*TODO : can add pagination here*/}
                             </List>
+                            <Pagination
+                                count={Math.ceil(crops.length / pageLength) - 1}
+                                size={"large"}
+                                page={page}
+                                onChange={(e, v) => {
+                                    setPage(v);
+                                }}
+                            />
                         </Paper>
                     </Grid>
                 </Grid>
