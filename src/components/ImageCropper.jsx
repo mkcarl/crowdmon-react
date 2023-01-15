@@ -6,14 +6,10 @@ import {
     Alert,
     Box,
     Button,
-    Container,
     Divider,
     Grid,
     Paper,
     Skeleton,
-    Step,
-    StepLabel,
-    Stepper,
     Typography,
 } from "@mui/material";
 import doneImage from "../static/done.jpg";

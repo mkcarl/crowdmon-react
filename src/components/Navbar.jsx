@@ -7,7 +7,6 @@ import {
     Typography,
 } from "@mui/material";
 import { Home, Leaderboard, Logout } from "@mui/icons-material";
-import { useCookies } from "react-cookie";
 import { useAuth } from "../auth";
 import { useNavigate } from "react-router-dom";
 

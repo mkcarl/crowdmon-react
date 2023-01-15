@@ -1,4 +1,4 @@
-import { Box, Chip, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { ImageCropper } from "../components/ImageCropper";
 import { useCookies } from "react-cookie";

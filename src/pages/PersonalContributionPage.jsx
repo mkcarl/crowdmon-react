@@ -15,24 +15,25 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Bar, Doughnut, Line } from "react-chartjs-2";
+import { Bar, Doughnut } from "react-chartjs-2";
 import {
-    Chart,
     ArcElement,
-    Tooltip,
+    BarElement,
+    CategoryScale,
+    Chart,
     Legend,
     LinearScale,
-    PointElement,
     LineElement,
-    Title,
+    PointElement,
     TimeScale,
-    CategoryScale,
-    BarElement,
+    Title,
+    Tooltip,
 } from "chart.js";
 import "chartjs-adapter-moment";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { Crop } from "@mui/icons-material";
+
 dayjs.extend(isBetween);
 Chart.register(
     ArcElement,

@@ -1,11 +1,8 @@
 import {
     Avatar,
     Box,
-    Divider,
     Grid,
-    IconButton,
     List,
-    ListItem,
     ListItemAvatar,
     ListItemButton,
     ListItemText,
