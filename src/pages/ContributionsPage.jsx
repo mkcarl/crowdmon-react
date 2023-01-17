@@ -88,7 +88,7 @@ function Contribution(props) {
             <ListItemText
                 primary={props.name}
                 secondary={`Latest contribution : ${dayjs(
-                    props.crops[0].timestamp * 1000
+                    props.crops[0].timestamp
                 ).fromNow()}`}
             />
             <ListItemText

@@ -167,7 +167,7 @@ export function PersonalContributionPage(props) {
         const cropFrequency = days.map((day) => {
             const nextDay = day.add(1, "day");
             const cropsOnDay = crops.filter((crop) => {
-                const cropDate = dayjs(crop.timestamp * 1000);
+                const cropDate = dayjs(crop.timestamp);
                 return cropDate.isBetween(day, nextDay);
             });
             return cropsOnDay.length;
@@ -326,8 +326,8 @@ export function PersonalContributionPage(props) {
                             <List>
                                 {Object.values(
                                     crops.slice(
-                                        page * pageLength,
-                                        page * pageLength + pageLength
+                                        (page - 1) * pageLength,
+                                        (page - 1) * pageLength + pageLength
                                     )
                                 ).map((crop) => (
                                     <ListItem>
@@ -337,7 +337,7 @@ export function PersonalContributionPage(props) {
                                         <ListItemText
                                             primary={crop.video_id}
                                             secondary={dayjs(
-                                                crop.timestamp * 1000
+                                                crop.timestamp
                                             ).format("DD MMM YYYY (HH:mm:ss)")}
                                         />
                                         <Chip
@@ -352,7 +352,7 @@ export function PersonalContributionPage(props) {
                                 ))}
                             </List>
                             <Pagination
-                                count={Math.ceil(crops.length / pageLength) - 1}
+                                count={Math.ceil(crops.length / pageLength)}
                                 size={"large"}
                                 page={page}
                                 onChange={(e, v) => {

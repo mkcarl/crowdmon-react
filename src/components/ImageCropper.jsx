@@ -40,7 +40,7 @@ async function sendCrop(crop, videoId, imageId, contributor) {
         height: crop.height,
         annotationClass: "paimon",
         contributorId: contributor,
-        timestamp: Math.floor(new Date() / 1000),
+        timestamp: Math.floor(+new Date()),
     });
 }
 
@@ -50,7 +50,7 @@ async function sendSkipCrop(videoId, imageId, contributor) {
         imageId: imageId,
         annotationClass: "none",
         contributorId: contributor,
-        timestamp: Math.floor(new Date() / 1000),
+        timestamp: Math.floor(+new Date()),
     });
 }
 
