@@ -1,6 +1,7 @@
 import {
     Avatar,
     Box,
+    CircularProgress,
     Grid,
     List,
     ListItemAvatar,
@@ -20,6 +21,7 @@ dayjs.extend(relativeTime);
 export function ContributionsPage() {
     const [crops, setCrops] = useState([]);
     const [contributions, setContributions] = useState({});
+    const [cropsLoading, setCropsLoading] = useState(true);
 
     useEffect(() => {
         // fetch crops
@@ -28,6 +30,7 @@ export function ContributionsPage() {
                 "http://100.76.207.17:8000/crops"
             );
             setCrops(cropsFromAPI.data);
+            setCropsLoading(false);
         };
         getCrops().then(() => {});
     }, []);
@@ -53,24 +56,40 @@ export function ContributionsPage() {
     return (
         <Box component={"div"}>
             <Navbar />
-            <Typography variant={"h1"}>Contribution Leaderboard</Typography>
-            <Grid container>
-                <Grid item xs={0} md={3}></Grid>
-                <Grid item xs={12} md={6}>
-                    <List>
-                        {Object.entries(contributions).map(([key, value]) => {
-                            return (
-                                <Contribution
-                                    name={key}
-                                    crops={value}
-                                    key={key}
-                                />
-                            );
-                        })}
-                    </List>
+            <Box component={"div"} sx={{ padding: "1rem" }}>
+                <Typography variant={"h1"}>Contribution Leaderboard</Typography>
+                <Grid container>
+                    <Grid item xs={0} md={3}></Grid>
+                    <Grid item xs={12} md={6}>
+                        {cropsLoading && (
+                            <Box
+                                component={"div"}
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    padding: "1rem",
+                                }}
+                            >
+                                <CircularProgress />
+                            </Box>
+                        )}
+                        <List>
+                            {Object.entries(contributions).map(
+                                ([key, value]) => {
+                                    return (
+                                        <Contribution
+                                            name={key}
+                                            crops={value}
+                                            key={key}
+                                        />
+                                    );
+                                }
+                            )}
+                        </List>
+                    </Grid>
+                    <Grid item xs={0} md={3}></Grid>
                 </Grid>
-                <Grid item xs={0} md={3}></Grid>
-            </Grid>
+            </Box>
         </Box>
     );
 }
