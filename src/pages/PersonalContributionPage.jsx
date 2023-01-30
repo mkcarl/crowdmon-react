@@ -14,7 +14,7 @@ import {
     useTheme,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Bar, Doughnut } from "react-chartjs-2";
 import {
     ArcElement,
@@ -135,9 +135,10 @@ const colors = [
 ];
 
 export function PersonalContributionPage(props) {
+    const navigate = useNavigate();
     const location = useLocation();
     const theme = useTheme();
-    const { name, crops } = location.state;
+    const { name, crops } = location.state ?? {};
     const [cropsByVideo, setCropsByVideo] = useState({});
     const [doughnutData, setDoughnutData] = useState({});
     const [doughnutDataLoaded, setDoughnutDataLoaded] = useState(false);
@@ -151,6 +152,11 @@ export function PersonalContributionPage(props) {
     const pageLength = 8;
 
     useEffect(() => {
+        if (!name || !crops) {
+            navigate("/contributions", { replace: true });
+            return;
+        }
+
         const reduced = crops.reduce((acc, crop) => {
             if (!acc[crop.video_id]) acc[crop.video_id] = [];
             acc[crop.video_id].push(crop);
@@ -193,7 +199,6 @@ export function PersonalContributionPage(props) {
             },
             hoverOffset: 4,
         };
-        console.log(draftLinedata);
         setLineData(draftLinedata);
     }, []);
 
@@ -228,140 +233,145 @@ export function PersonalContributionPage(props) {
             <Navbar />
             <Box component={"div"} sx={{ padding: "1rem" }}>
                 <h1>{name}'s Contribution</h1>
-                <Grid container spacing={2}>
-                    <Grid
-                        item
-                        md={6}
-                        sx={{
-                            width: "100%",
-                        }}
-                    >
-                        <Paper elevation={1}>
-                            <Box
-                                component={"div"}
-                                sx={{
-                                    padding: "1rem",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <Typography variant={"h4"}>
-                                    Contributions per video
-                                </Typography>
-                                <Box
-                                    component={"div"}
-                                    sx={{
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        width: "100%",
-                                        height: "30vh",
-                                    }}
-                                >
-                                    {doughnutDataLoaded && (
-                                        <Doughnut
-                                            data={doughnutData}
-                                            options={{
-                                                maintainAspectRatio: false,
-                                            }}
-                                        />
-                                    )}
-                                </Box>
-                            </Box>
-                        </Paper>
-                    </Grid>
-                    <Grid
-                        item
-                        md={6}
-                        sx={{
-                            width: "100%",
-                        }}
-                    >
-                        <Paper elevation={1}>
-                            <Box
-                                component={"div"}
-                                sx={{
-                                    padding: "1rem",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <Typography variant={"h4"}>
-                                    Past 7 days contributions
-                                </Typography>
-                                <Box
-                                    component={"div"}
-                                    sx={{
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        width: "100%",
-                                        height: "30vh",
-                                    }}
-                                >
-                                    {lineDataLoaded && (
-                                        <Bar
-                                            data={lineData}
-                                            options={{
-                                                maintainAspectRatio: false,
-                                            }}
-                                        />
-                                    )}
-                                </Box>
-                            </Box>
-                        </Paper>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Paper
-                            elevation={1}
+                {!!crops && (
+                    <Grid container spacing={2}>
+                        <Grid
+                            item
+                            md={6}
                             sx={{
-                                padding: "1rem",
-                                gap: "1rem",
+                                width: "100%",
                             }}
                         >
-                            <Typography variant={"h4"} textAlign={"center"}>
-                                Crop details
-                            </Typography>
-                            <Divider />
-                            <List>
-                                {Object.values(
-                                    crops.slice(
-                                        (page - 1) * pageLength,
-                                        (page - 1) * pageLength + pageLength
-                                    )
-                                ).map((crop) => (
-                                    <ListItem>
-                                        <ListItemIcon>
-                                            <Crop color={"secondary"} />
-                                        </ListItemIcon>
-                                        <ListItemText
-                                            primary={crop.video_id}
-                                            secondary={dayjs(
-                                                crop.timestamp
-                                            ).format("DD MMM YYYY (HH:mm:ss)")}
-                                        />
-                                        <Chip
-                                            label={crop.annotation_class}
-                                            color={
-                                                crop.annotation_class === "none"
-                                                    ? "error"
-                                                    : "primary"
-                                            }
-                                        />
-                                    </ListItem>
-                                ))}
-                            </List>
-                            <Pagination
-                                count={Math.ceil(crops.length / pageLength)}
-                                size={"large"}
-                                page={page}
-                                onChange={(e, v) => {
-                                    setPage(v);
+                            <Paper elevation={1}>
+                                <Box
+                                    component={"div"}
+                                    sx={{
+                                        padding: "1rem",
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <Typography variant={"h4"}>
+                                        Contributions per video
+                                    </Typography>
+                                    <Box
+                                        component={"div"}
+                                        sx={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            width: "100%",
+                                            height: "30vh",
+                                        }}
+                                    >
+                                        {doughnutDataLoaded && (
+                                            <Doughnut
+                                                data={doughnutData}
+                                                options={{
+                                                    maintainAspectRatio: false,
+                                                }}
+                                            />
+                                        )}
+                                    </Box>
+                                </Box>
+                            </Paper>
+                        </Grid>
+                        <Grid
+                            item
+                            md={6}
+                            sx={{
+                                width: "100%",
+                            }}
+                        >
+                            <Paper elevation={1}>
+                                <Box
+                                    component={"div"}
+                                    sx={{
+                                        padding: "1rem",
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <Typography variant={"h4"}>
+                                        Past 7 days contributions
+                                    </Typography>
+                                    <Box
+                                        component={"div"}
+                                        sx={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            width: "100%",
+                                            height: "30vh",
+                                        }}
+                                    >
+                                        {lineDataLoaded && (
+                                            <Bar
+                                                data={lineData}
+                                                options={{
+                                                    maintainAspectRatio: false,
+                                                }}
+                                            />
+                                        )}
+                                    </Box>
+                                </Box>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Paper
+                                elevation={1}
+                                sx={{
+                                    padding: "1rem",
+                                    gap: "1rem",
                                 }}
-                            />
-                        </Paper>
+                            >
+                                <Typography variant={"h4"} textAlign={"center"}>
+                                    Crop details
+                                </Typography>
+                                <Divider />
+                                <List>
+                                    {Object.values(
+                                        crops.slice(
+                                            (page - 1) * pageLength,
+                                            (page - 1) * pageLength + pageLength
+                                        )
+                                    ).map((crop) => (
+                                        <ListItem>
+                                            <ListItemIcon>
+                                                <Crop color={"secondary"} />
+                                            </ListItemIcon>
+                                            <ListItemText
+                                                primary={crop.video_id}
+                                                secondary={dayjs(
+                                                    crop.timestamp
+                                                ).format(
+                                                    "DD MMM YYYY (HH:mm:ss)"
+                                                )}
+                                            />
+                                            <Chip
+                                                label={crop.annotation_class}
+                                                color={
+                                                    crop.annotation_class ===
+                                                    "none"
+                                                        ? "error"
+                                                        : "primary"
+                                                }
+                                            />
+                                        </ListItem>
+                                    ))}
+                                </List>
+                                <Pagination
+                                    count={Math.ceil(crops.length / pageLength)}
+                                    size={"large"}
+                                    page={page}
+                                    onChange={(e, v) => {
+                                        setPage(v);
+                                    }}
+                                />
+                            </Paper>
+                        </Grid>
                     </Grid>
-                </Grid>
+                )}
             </Box>
         </Box>
     );

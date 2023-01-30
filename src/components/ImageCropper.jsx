@@ -94,7 +94,6 @@ export function ImageCropper(props) {
     const loadImage = async () => {
         const res = await axios.get(temp);
         setImage(res.data);
-        console.log(image);
     };
 
     // on load

@@ -1,6 +1,7 @@
 import {
     Box,
     Chip,
+    CircularProgress,
     Divider,
     List,
     ListItemButton,
@@ -12,15 +13,18 @@ import {
 import { VideoLibrary } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { alignProperty } from "@mui/material/styles/cssUtils";
 
 export function AvailableVideosList() {
     const [videoTitles, setVideoTitles] = useState([]);
+    const [availableVideosLoading, setAvailableVideosLoading] = useState(true);
 
     useEffect(() => {
         const setVideoTitlesFromServer = async () => {
             const videos = (
                 await axios.get("http://100.76.207.17:8000/videoTitles")
             ).data;
+            setAvailableVideosLoading(false);
             setVideoTitles(videos);
         };
         setVideoTitlesFromServer().then();
@@ -33,6 +37,18 @@ export function AvailableVideosList() {
                     Available videos
                 </Typography>
                 <Divider />
+                {availableVideosLoading && (
+                    <Box
+                        component={"div"}
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            padding: "1rem",
+                        }}
+                    >
+                        <CircularProgress />
+                    </Box>
+                )}
                 <List>
                     {videoTitles.map((video) => (
                         <VideoItem name={video} key={video} />
