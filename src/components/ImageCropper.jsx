@@ -31,7 +31,7 @@ function centerAspectCrop(mediaWidth, mediaHeight, aspect) {
 }
 
 async function sendCrop(crop, videoId, imageId, contributor) {
-    await axios.post("http://100.76.207.17:8000/crop", {
+    await axios.post(`${process.env.REACT_APP_API_ROUTE}/crop`, {
         videoId: videoId,
         imageId: imageId,
         x: crop.x,
@@ -45,7 +45,7 @@ async function sendCrop(crop, videoId, imageId, contributor) {
 }
 
 async function sendSkipCrop(videoId, imageId, contributor) {
-    await axios.post("http://100.76.207.17:8000/crop", {
+    await axios.post(`${process.env.REACT_APP_API_ROUTE}/crop`, {
         videoId: videoId,
         imageId: imageId,
         annotationClass: "none",
@@ -68,7 +68,7 @@ export function ImageCropper(props) {
         const getVideoProgressFromServer = async () => {
             const progress = (
                 await axios.get(
-                    `http://100.76.207.17:8000/videoCropStatus?videoId=${props.videoId}`
+                    `${process.env.REACT_APP_API_ROUTE}/videoCropStatus?videoId=${props.videoId}`
                 )
             ).data;
             setVideoProgress(progress);
@@ -90,7 +90,7 @@ export function ImageCropper(props) {
         }
     }, [image]);
 
-    const temp = `http://100.76.207.17:8000/randomImage?videoId=${props.videoId}`;
+    const temp = `${process.env.REACT_APP_API_ROUTE}/randomImage?videoId=${props.videoId}`;
     const loadImage = async () => {
         const res = await axios.get(temp);
         setImage(res.data);

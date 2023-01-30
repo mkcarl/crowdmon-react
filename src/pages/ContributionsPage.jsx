@@ -27,7 +27,7 @@ export function ContributionsPage() {
         // fetch crops
         const getCrops = async () => {
             const cropsFromAPI = await axios.get(
-                "http://100.76.207.17:8000/crops"
+                `${process.env.REACT_APP_API_ROUTE}/crops`
             );
             setCrops(cropsFromAPI.data);
             setCropsLoading(false);

@@ -22,7 +22,9 @@ export function AvailableVideosList() {
     useEffect(() => {
         const setVideoTitlesFromServer = async () => {
             const videos = (
-                await axios.get("http://100.76.207.17:8000/videoTitles")
+                await axios.get(
+                    `${process.env.REACT_APP_API_ROUTE}/videoTitles`
+                )
             ).data;
             setAvailableVideosLoading(false);
             setVideoTitles(videos);
@@ -67,7 +69,7 @@ function VideoItem(props) {
         const getVideoProgressFromServer = async () => {
             const progress = (
                 await axios.get(
-                    `http://100.76.207.17:8000/videoCropStatus?videoId=${props.name}`
+                    `${process.env.REACT_APP_API_ROUTE}/videoCropStatus?videoId=${props.name}`
                 )
             ).data;
             setVideoProgress(progress);
