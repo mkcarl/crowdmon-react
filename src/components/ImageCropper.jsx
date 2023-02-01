@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
@@ -30,20 +30,6 @@ function centerAspectCrop(mediaWidth, mediaHeight, aspect) {
     );
 }
 
-async function sendCrop(crop, videoId, imageId, contributor) {
-    await axios.post(`${process.env.REACT_APP_API_ROUTE}/crop`, {
-        videoId: videoId,
-        imageId: imageId,
-        x: crop.x,
-        y: crop.y,
-        width: crop.width,
-        height: crop.height,
-        annotationClass: "paimon",
-        contributorId: contributor,
-        timestamp: Math.floor(+new Date()),
-    });
-}
-
 async function sendSkipCrop(videoId, imageId, contributor) {
     await axios.post(`${process.env.REACT_APP_API_ROUTE}/crop`, {
         videoId: videoId,
@@ -63,6 +49,7 @@ export function ImageCropper(props) {
     const [videoProgress, setVideoProgress] = useState({});
     const [completion, setCompletion] = useState(0);
     const [dimensions, setDimensions] = useState({ width: 640, height: 360 });
+    const imgRef = useRef(null);
 
     useEffect(() => {
         const getVideoProgressFromServer = async () => {
@@ -96,6 +83,71 @@ export function ImageCropper(props) {
         setImage(res.data);
     };
 
+    const getCroppedImg = async (image) => {
+        try {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+
+            const centerX = image.naturalWidth / 2;
+            const centerY = image.naturalHeight / 2;
+
+            canvas.width = crop.width;
+            canvas.height = crop.height;
+            ctx.translate(-crop.x, -crop.y);
+            ctx.translate(centerX, centerY);
+            ctx.translate(-centerX, -centerY);
+            ctx.drawImage(
+                image,
+                0,
+                0,
+                image.naturalWidth,
+                image.naturalHeight,
+                0,
+                0,
+                image.naturalWidth,
+                image.naturalHeight
+            );
+
+            const b64 = canvas.toDataURL("image/jpeg", 1);
+            return b64;
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    const sendCrop = async (crop, videoId, imageId, contributor, image) => {
+        console.log(image);
+        await axios.post(`${process.env.REACT_APP_API_ROUTE}/crop`, {
+            videoId: videoId,
+            imageId: imageId,
+            x: crop.x,
+            y: crop.y,
+            width: crop.width,
+            height: crop.height,
+            annotationClass: "paimon",
+            contributorId: contributor,
+            timestamp: Math.floor(+new Date()),
+            base64Image: image,
+        });
+    };
+
+    const onClickCrop = async () => {
+        const b64 = await getCroppedImg(imgRef.current);
+
+        try {
+            await sendCrop(
+                completedCrop,
+                props.videoId,
+                image.name,
+                props.contributorId,
+                b64
+            );
+            setRefresh(true);
+        } catch (e) {
+            console.log("Send crop failed");
+        }
+    };
+
     // on load
     useEffect(() => {
         loadImage().then(() => console.log("image loaded"));
@@ -107,6 +159,7 @@ export function ImageCropper(props) {
             loadImage().then(() => console.log("image refreshed"));
             setRefresh(false);
             setImageLoaded(false);
+            console.log("refresh");
         }
     }, [refresh]);
 
@@ -174,11 +227,15 @@ export function ImageCropper(props) {
                             <Box component={"div"} hidden={completion === 100}>
                                 <ReactCrop
                                     crop={crop}
-                                    onChange={(c) => setCrop(c)}
+                                    onChange={(c) => {
+                                        setCrop(c);
+                                    }}
                                     onComplete={(c) => setCompletedCrop(c)}
                                 >
                                     <Box
                                         component={"img"}
+                                        ref={imgRef}
+                                        crossOrigin={"anonymous"}
                                         src={image.url}
                                         onLoad={onImageLoad}
                                         loading={"lazy"}
@@ -243,18 +300,7 @@ export function ImageCropper(props) {
                                 skip
                             </Button>
                             <Button
-                                onClick={() => {
-                                    sendCrop(
-                                        completedCrop,
-                                        props.videoId,
-                                        image.name,
-                                        props.contributorId
-                                    ).then(
-                                        () => setRefresh(true),
-                                        () => console.log("send crop failed")
-                                    );
-                                    setRefresh(true);
-                                }}
+                                onClick={onClickCrop}
                                 color={"primary"}
                                 variant={"contained"}
                                 disabled={completion >= 100}
