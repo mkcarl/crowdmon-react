@@ -25,12 +25,24 @@ export function ContributionsPage() {
 
     useEffect(() => {
         // fetch crops
-        const getCrops = async () => {
+        const getCrops = async (start) => {
             const cropsFromAPI = await axios.get(
-                `${process.env.REACT_APP_API_ROUTE}/crops`
+                `${process.env.REACT_APP_API_ROUTE}/crops?start=${start || 0}`
             );
-            setCrops(cropsFromAPI.data);
-            setCropsLoading(false);
+            const data = cropsFromAPI.data.crops;
+            const next = cropsFromAPI.data.next;
+
+            const existingCrops = crops;
+            for (const datum of data) {
+                existingCrops.push(datum);
+            }
+            setCrops(existingCrops);
+
+            if (!next) {
+                setCropsLoading(false);
+                return;
+            }
+            await getCrops(next);
         };
         getCrops().then(() => {});
     }, []);
@@ -51,7 +63,7 @@ export function ContributionsPage() {
             contributionsFromCrops[key] = sorted;
         }
         setContributions(contributionsFromCrops);
-    }, [crops]);
+    }, [cropsLoading]);
 
     return (
         <Box component={"div"}>
@@ -73,19 +85,21 @@ export function ContributionsPage() {
                                 <CircularProgress />
                             </Box>
                         )}
-                        <List>
-                            {Object.entries(contributions).map(
-                                ([key, value]) => {
-                                    return (
-                                        <Contribution
-                                            name={key}
-                                            crops={value}
-                                            key={key}
-                                        />
-                                    );
-                                }
-                            )}
-                        </List>
+                        {!cropsLoading && (
+                            <List>
+                                {Object.entries(contributions).map(
+                                    ([key, value]) => {
+                                        return (
+                                            <Contribution
+                                                name={key}
+                                                crops={value}
+                                                key={key}
+                                            />
+                                        );
+                                    }
+                                )}
+                            </List>
+                        )}
                     </Grid>
                     <Grid item xs={0} md={3}></Grid>
                 </Grid>
